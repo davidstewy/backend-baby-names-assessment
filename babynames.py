@@ -79,7 +79,6 @@ def create_parser():
 
 
 def main():
-    # This command-line parsing code is provided.
     parser = create_parser()
     args = parser.parse_args()
 
@@ -99,9 +98,6 @@ def main():
     else:
         for filename in file_list:
             print(names_list)
-
-    # For each filename, get the names, then either print the text output
-    # or write it to a summary file
 
 
 if __name__ == '__main__':
