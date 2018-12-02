@@ -39,24 +39,48 @@ Suggested milestones for incremental development:
 """
 
 
-def extract_names(filename):
+def extract_names(filenames):
     """
-    Given a file name for baby.html, returns a list starting with the year string
-    followed by the name-rank strings in alphabetical order.
+    Given a file name for baby.html, returns a list starting with the
+    year string followed by the name-rank strings in alphabetical order.
     ['2006', 'Aaliyah 91', Aaron 57', 'Abagail 895', ' ...]
     """
-    # +++your code here+++
-    return
+    names_rank_list = []
+    ranked_dict = {}
+    for filename in filenames:
+        with open(filename) as file:
+            content = file.read()
+            year = re.findall(r'Popularity\sin\s(\d\d\d\d)', content)[0]
+            names = re.findall(
+                r'<td>(\d+)</td><td>(\w+)</td><td>(\w+)</td>', content)
+            names_rank_list.append(year)
+            for name in names:
+                rank, guy, gal = name
+                if guy not in ranked_dict:
+                    ranked_dict[guy] = rank
+                if gal not in ranked_dict:
+                    ranked_dict[gal] = rank
+            sorted_list = sorted(ranked_dict)
+
+            for name in sorted_list:
+                names_rank_list.append('{} {}'.format(name, ranked_dict[name]))
+        return names_rank_list
 
 
-def main():
-    # This command-line parsing code is provided.
+def create_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument(
         '--summaryfile', help='creates a summary file', action='store_true')
     # The nargs option instructs the parser to expect 1 or more filenames.
-    # It will also expand wildcards just like the shell, e.g. 'baby*.html' will work.
+    # It will also expand wildcards just like the shell, e.g. 'baby*.html'
+    # will work.
     parser.add_argument('files', help='filename(s) to parse', nargs='+')
+    return parser
+
+
+def main():
+    # This command-line parsing code is provided.
+    parser = create_parser()
     args = parser.parse_args()
 
     if not args:
@@ -64,11 +88,18 @@ def main():
         sys.exit(1)
 
     file_list = args.files
-
-    # option flag
     create_summary = args.summaryfile
+    names_list = extract_names(file_list)
 
-    # +++your code here+++
+    if create_summary:
+        names = '\n'.join(names_list)+'\n'
+        for filename in file_list:
+            with open(filename + '.summary', 'w') as f:
+                f.write(names)
+    else:
+        for filename in file_list:
+            print(names_list)
+
     # For each filename, get the names, then either print the text output
     # or write it to a summary file
 
