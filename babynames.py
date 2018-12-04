@@ -38,6 +38,8 @@ Suggested milestones for incremental development:
  -Fix main() to use the extract_names list
 """
 
+__author__ = 'davidstewy'
+
 
 def extract_names(filenames):
     """
